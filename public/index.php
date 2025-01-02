@@ -1,4 +1,6 @@
 <?php
+use App\Controllers\ProjectController;
+use App\Controllers\TaskController;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 

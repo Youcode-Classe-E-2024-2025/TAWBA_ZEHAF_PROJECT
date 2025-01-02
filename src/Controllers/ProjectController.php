@@ -1,5 +1,5 @@
 <?php
-
+require_once __DIR__ . '/../Views/Modles/Project.php';
 class ProjectController {
     private $projectModel;
     private $taskModel;
