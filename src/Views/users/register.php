@@ -56,16 +56,21 @@ document.getElementById('registerForm').addEventListener('submit', function(even
     var password = document.getElementById('password').value;
     var errors = [];
 
-    if (!name || name.length < 2 || name.length > 100) {
-        errors.push("Name must be between 2 and 100 characters.");
+    // Name validation
+    if (!name.match(/^[a-zA-Z ]{2,100}$/)) {
+        errors.push("Name must be between 2 and 100 characters and contain only letters and spaces.");
     }
 
-    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+    // Email validation
+    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
         errors.push("Please enter a valid email address.");
     }
 
-    if (!password || password.length < 8) {
-        errors.push("Password must be at least 8 characters long.");
+    // Password validation
+    if (!password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)) {
+        errors.push(
+            "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number."
+        );
     }
 
     if (errors.length > 0) {
