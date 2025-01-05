@@ -1,7 +1,9 @@
 <?php
+namespace App\Models;
+namespace Config; 
 
 use App\Database;
-namespace App\Models;
+// namespace App\Models;
 namespace Config; 
 use PDO;
 
@@ -92,8 +94,8 @@ public function update() {
 }
 
 
-public static function delete($id) {
+public static function delete($id){
 $db = Database::getInstance()->getConnection();
 $sql = "DELETE FROM users WHERE id = ?";
 $stmt = $db->prepare($sql);
-return $stmt->execute([$id]); }
+return $stmt->execute([$id]);}}

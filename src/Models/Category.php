@@ -1,5 +1,5 @@
 <?php
-
+namespace Config;
 namespace App\Models;
 
 use App\Database;
