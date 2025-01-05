@@ -1,5 +1,5 @@
 <?php require_once __DIR__ . '/../layout.php'; ?>
-<script src="https://cdn.tailwindcss.com"></script>
+
 <div class="container mx-auto px-4 py-8">
     <h1 class="text-3xl font-bold mb-8">Dashboard</h1>
 
@@ -26,6 +26,17 @@
         <div class="bg-white rounded-lg shadow p-6">
             <h2 class="text-2xl font-semibold mb-4">Task Overview</h2>
             <canvas id="taskChart"></canvas>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-2xl font-semibold mb-4">Project Progress Over Time</h2>
+            <canvas id="projectProgressChart"></canvas>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-2xl font-semibold mb-4">Task Distribution by Category</h2>
+            <canvas id="taskCategoryChart"></canvas>
         </div>
     </div>
 
@@ -75,7 +86,8 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(data => {
             console.log('Received data:', data);
-            if (!data.projectData || !data.taskData) {
+            if (!data.projectData || !data.taskData || !data.projectProgressData || !data
+                .taskCategoryData) {
                 throw new Error('Received data is not in the expected format');
             }
 
@@ -141,12 +153,92 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             });
+
+            // Project Progress Chart
+            var projectProgressCtx = document.getElementById('projectProgressChart').getContext('2d');
+            new Chart(projectProgressCtx, {
+                type: 'line',
+                data: {
+                    labels: data.projectProgressData.labels,
+                    datasets: [{
+                        label: 'Completed Projects',
+                        data: data.projectProgressData.data,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Completed Projects'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Month'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Project Completion Progress Over Time'
+                        }
+                    }
+                }
+            });
+
+            // Task Category Chart
+            var taskCategoryCtx = document.getElementById('taskCategoryChart').getContext('2d');
+            new Chart(taskCategoryCtx, {
+                type: 'radar',
+                data: {
+                    labels: data.taskCategoryData.labels,
+                    datasets: [{
+                        label: 'Number of Tasks',
+                        data: data.taskCategoryData.data,
+                        fill: true,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgb(54, 162, 235)',
+                        pointBackgroundColor: 'rgb(54, 162, 235)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(54, 162, 235)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Task Distribution Across Categories'
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: false
+                            },
+                            suggestedMin: 0
+                        }
+                    }
+                }
+            });
         })
         .catch(error => {
             console.error('Error fetching or processing chart data:', error);
             document.getElementById('projectChart').innerHTML = 'Error loading project chart: ' + error
                 .message;
             document.getElementById('taskChart').innerHTML = 'Error loading task chart: ' + error.message;
+            document.getElementById('projectProgressChart').innerHTML =
+                'Error loading project progress chart: ' + error.message;
+            document.getElementById('taskCategoryChart').innerHTML = 'Error loading task category chart: ' +
+                error.message;
         });
 });
 </script>
