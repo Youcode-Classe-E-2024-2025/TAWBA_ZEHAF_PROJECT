@@ -113,18 +113,18 @@ class TaskController {
 
     public function moveTask() {
         AuthHelper::requireLogin();
-        
+    
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $taskId = $_POST['task_id'] ?? null;
             $newColumnId = $_POST['column_id'] ?? null;
-            
+        
             if ($taskId && $newColumnId) {
-                $result = $this->taskModel->updateColumn($taskId, $newColumnId);
+                $result = $this->taskModel->updateTaskColumn($taskId, $newColumnId);
                 echo json_encode(['success' => $result]);
                 exit;
             }
         }
-        
+    
         echo json_encode(['success' => false, 'error' => 'Invalid request']);
         exit;
     }

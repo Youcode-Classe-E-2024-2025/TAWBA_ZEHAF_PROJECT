@@ -1,5 +1,4 @@
 <?php
-
 require_once __DIR__ . '/../Models/Project.php';
 require_once __DIR__ . '/../Models/Task.php';
 require_once __DIR__ . '/../Helpers/AuthHelper.php';

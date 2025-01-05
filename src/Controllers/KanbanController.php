@@ -34,15 +34,13 @@ class KanbanController {
     public function updateTaskColumn() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $taskId = $_POST['task_id'] ?? null;
-            $newColumn = $_POST['new_column'] ?? null;
+            $newColumnId = $_POST['new_column'] ?? null;
 
-            if ($taskId && $newColumn) {
-                $task = Task::findById($taskId);
-                if ($task) {
-                    $task->updateColumn($newColumn);
-                    echo json_encode(['success' => true]);
-                    exit;
-                }
+            if ($taskId && $newColumnId) {
+                $task = new Task();
+                $result = $task->updateTaskColumn($taskId, $newColumnId);
+                echo json_encode(['success' => $result]);
+                exit;
             }
         }
 

@@ -1,5 +1,5 @@
 <?php
-
+namespace Config; 
 class Task {
     private $db;
 
@@ -50,5 +50,11 @@ class Task {
         $sql = "UPDATE tasks SET status = ? WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([$status, $id]);
+    }
+
+    public function updateTaskColumn($taskId, $columnId) {
+        $sql = "UPDATE tasks SET column_id = ? WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$columnId, $taskId]);
     }
 }

@@ -5,7 +5,7 @@ namespace App\Helpers;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-class EmailHelper
+class Emailhleper
 {
     public static function sendVerificationEmail(string $email, string $token): bool
     {

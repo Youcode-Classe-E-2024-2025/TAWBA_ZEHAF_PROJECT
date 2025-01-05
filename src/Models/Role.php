@@ -1,6 +1,6 @@
 <?php
-
-namespace App\Models;
+namespace Config; 
+//namespace App\Models;
 
 class Role {
     private int $id;
@@ -11,14 +11,14 @@ class Role {
     }
 
     public function save() {
-        $db = \Database::getInstance()->getConnection();
+        $db = Database::getInstance()->getConnection();
         $stmt = $db->prepare("INSERT INTO roles (name) VALUES (:name)");
         $stmt->execute(['name' => $this->name]);
         $this->id = $db->lastInsertId();
     }
 
     public static function getAll() {
-        $db = \Database::getInstance()->getConnection();
+        $db = Database::getInstance()->getConnection();
         $stmt = $db->query("SELECT * FROM roles");
         return $stmt->fetchAll();
     }

@@ -1,5 +1,5 @@
 <?php
-
+namespace Config; 
 class Category {
     private $db;
 

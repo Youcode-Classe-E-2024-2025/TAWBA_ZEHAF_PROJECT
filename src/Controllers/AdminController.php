@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Models\User;
+use App\Models\User; 
 use App\Models\Project;
 use App\Models\Role;
 use App\Middleware\AdminMiddleware;

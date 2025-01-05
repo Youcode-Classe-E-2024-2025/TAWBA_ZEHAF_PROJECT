@@ -1,5 +1,5 @@
 <?php
-
+namespace Config; 
 class KanbanBoard {
     private $db;
 

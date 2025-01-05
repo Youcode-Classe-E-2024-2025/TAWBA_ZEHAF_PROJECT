@@ -1,5 +1,5 @@
 <?php
-
+namespace Config; 
 class Project {
     private $db;
 

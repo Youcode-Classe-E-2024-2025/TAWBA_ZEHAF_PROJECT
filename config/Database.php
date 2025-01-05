@@ -1,5 +1,7 @@
 <?php
+ namespace Config; // Add this line to specify that the class belongs to the 'App' namespace
 
+use PDO;
 class Database {
     private static $instance = null;
     private $conn;

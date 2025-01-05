@@ -1,5 +1,5 @@
 <?php
-
+namespace Config; 
 class Tag {
     private $db;
 
