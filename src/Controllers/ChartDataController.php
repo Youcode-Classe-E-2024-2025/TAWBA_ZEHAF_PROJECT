@@ -5,7 +5,6 @@ namespace App\Controllers;
 use App\Models\Project;
 use App\Models\Task;
 use App\Middleware\AuthMiddleware;
-use App\Middleware\AuthMiddleware;
 
 class ChartDataController {
     public function __construct() {

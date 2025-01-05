@@ -5,7 +5,7 @@ namespace App\Controllers;
 use App\Models\KanbanBoard;
 use App\Models\Task;
 use App\Models\Project;
-use App\Middlewares\AuthMiddleware;
+use App\Middleware\AuthMiddleware;
 
 class KanbanController {
     public function __construct() {
