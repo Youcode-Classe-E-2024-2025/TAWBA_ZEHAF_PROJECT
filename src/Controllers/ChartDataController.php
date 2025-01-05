@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Database;
 use App\Models\Project;
 use App\Models\Task;
 use App\Middleware\AuthMiddleware;
@@ -32,7 +33,7 @@ class ChartDataController {
     }
 
     private function getProjectData() {
-        $db = \Database::getInstance()->getConnection();
+        $db = Database::getInstance()->getConnection();
         $stmt = $db->query("SELECT status, COUNT(*) as count FROM projects GROUP BY status");
         $rows = $stmt->fetchAll();
 
@@ -43,7 +44,7 @@ class ChartDataController {
     }
 
     private function getTaskData() {
-        $db = \Database::getInstance()->getConnection();
+        $db = Database::getInstance()->getConnection();
         $stmt = $db->query("SELECT status, COUNT(*) as count FROM tasks GROUP BY status");
         $rows = $stmt->fetchAll();
 
@@ -54,7 +55,7 @@ class ChartDataController {
     }
 
     private function getProjectProgressData() {
-        $db = \Database::getInstance()->getConnection();
+        $db =Database::getInstance()->getConnection();
         $stmt = $db->query("
             SELECT 
                 DATE_FORMAT(created_at, '%Y-%m') as month,
@@ -74,7 +75,7 @@ class ChartDataController {
     }
 
     private function getTaskCategoryData() {
-        $db = \Database::getInstance()->getConnection();
+        $db = Database::getInstance()->getConnection();
         $stmt = $db->query("
             SELECT 
                 category,

@@ -1,5 +1,6 @@
 <?php
 
+use App\Database;
 namespace App\Models;
 namespace Config; 
 use PDO;
@@ -7,9 +8,9 @@ use PDO;
 class User {
 private $db;
 private $id;
-    private $name;
-    private $email;
-    private $roleId;
+private $name;
+private $email;
+private $roleId;
 public function __construct() {
 $this->db = Database::getInstance()->getConnection();
 }
@@ -95,4 +96,4 @@ public static function delete($id) {
 $db = Database::getInstance()->getConnection();
 $sql = "DELETE FROM users WHERE id = ?";
 $stmt = $db->prepare($sql);
-return $stmt->execute([$id]);}
+return $stmt->execute([$id]); }
