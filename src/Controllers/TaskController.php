@@ -1,11 +1,10 @@
 <?php
-use App\Controllers\ProjectController;
-require_once 'src\Models\Task.php';
-require_once 'src\Models\Category.php';
-require_once 'src\Models\Tag.php';
-use App\Models\Task;
-use App\Models\Category;
-use App\Models\Tag;
+
+require_once __DIR__ . '/../Models/Task.php';
+require_once __DIR__ . '/../Models/Category.php';
+require_once __DIR__ . '/../Models/Tag.php';
+require_once __DIR__ . '/../Helpers/AuthHelper.php';
+require_once __DIR__ . '/../Helpers/ValidationHelper.php';
 
 class TaskController {
     private $taskModel;
@@ -19,33 +18,38 @@ class TaskController {
     }
 
     public function create($projectId) {
+        AuthHelper::requireLogin();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $title = $_POST['title'] ?? '';
             $description = $_POST['description'] ?? '';
             $assignedTo = $_POST['assigned_to'] ?? null;
             $status = $_POST['status'] ?? 'pending';
 
-            if ($this->taskModel->create($title, $description, $projectId, $assignedTo, $status)) {
-                $taskId = $this->taskModel->getLastInsertId();
+            $errors = ValidationHelper::validateTask($title, $description);
 
-                // Handle categories
-                if (isset($_POST['categories'])) {
-                    foreach ($_POST['categories'] as $categoryId) {
-                        $this->categoryModel->addTaskCategory($taskId, $categoryId);
+            if (empty($errors)) {
+                if ($this->taskModel->create($title, $description, $projectId, $assignedTo, $status)) {
+                    $taskId = $this->taskModel->getLastInsertId();
+
+                    // Handle categories
+                    if (isset($_POST['categories'])) {
+                        foreach ($_POST['categories'] as $categoryId) {
+                            $this->categoryModel->addTaskCategory($taskId, $categoryId);
+                        }
                     }
-                }
 
-                // Handle tags
-                if (isset($_POST['tags'])) {
-                    foreach ($_POST['tags'] as $tagId) {
-                        $this->tagModel->addTaskTag($taskId, $tagId);
+                    // Handle tags
+                    if (isset($_POST['tags'])) {
+                        foreach ($_POST['tags'] as $tagId) {
+                            $this->tagModel->addTaskTag($taskId, $tagId);
+                        }
                     }
-                }
 
-                header('Location: /projects/view/' . $projectId);
-                exit;
-            } else {
-                $error = "Failed to create task";
+                    header('Location: /projects/view/' . $projectId);
+                    exit;
+                } else {
+                    $errors[] = "Failed to create task";
+                }
             }
         }
 
@@ -55,6 +59,7 @@ class TaskController {
     }
 
     public function edit($id) {
+        AuthHelper::requireLogin();
         $task = $this->taskModel->getTaskById($id);
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $title = $_POST['title'] ?? '';
@@ -62,27 +67,31 @@ class TaskController {
             $assignedTo = $_POST['assigned_to'] ?? null;
             $status = $_POST['status'] ?? 'pending';
 
-            if ($this->taskModel->update($id, $title, $description, $assignedTo, $status)) {
-                // Update categories and tags
-                $this->categoryModel->removeTaskCategories($id);
-                $this->tagModel->removeTaskTags($id);
+            $errors = ValidationHelper::validateTask($title, $description);
 
-                if (isset($_POST['categories'])) {
-                    foreach ($_POST['categories'] as $categoryId) {
-                        $this->categoryModel->addTaskCategory($id, $categoryId);
+            if (empty($errors)) {
+                if ($this->taskModel->update($id, $title, $description, $assignedTo, $status)) {
+                    // Update categories and tags
+                    $this->categoryModel->removeTaskCategories($id);
+                    $this->tagModel->removeTaskTags($id);
+
+                    if (isset($_POST['categories'])) {
+                        foreach ($_POST['categories'] as $categoryId) {
+                            $this->categoryModel->addTaskCategory($id, $categoryId);
+                        }
                     }
-                }
 
-                if (isset($_POST['tags'])) {
-                    foreach ($_POST['tags'] as $tagId) {
-                        $this->tagModel->addTaskTag($id, $tagId);
+                    if (isset($_POST['tags'])) {
+                        foreach ($_POST['tags'] as $tagId) {
+                            $this->tagModel->addTaskTag($id, $tagId);
+                        }
                     }
-                }
 
-                header('Location: /projects/view/' . $task['project_id']);
-                exit;
-            } else {
-                $error = "Failed to update task";
+                    header('Location: /projects/view/' . $task['project_id']);
+                    exit;
+                } else {
+                    $errors[] = "Failed to update task";
+                }
             }
         }
 
@@ -94,10 +103,29 @@ class TaskController {
     }
 
     public function updateStatus($id, $status) {
+        AuthHelper::requireLogin();
         if ($this->taskModel->updateStatus($id, $status)) {
             echo json_encode(['success' => true]);
         } else {
             echo json_encode(['success' => false, 'error' => 'Failed to update task status']);
         }
+    }
+
+    public function moveTask() {
+        AuthHelper::requireLogin();
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $taskId = $_POST['task_id'] ?? null;
+            $newColumnId = $_POST['column_id'] ?? null;
+            
+            if ($taskId && $newColumnId) {
+                $result = $this->taskModel->updateTaskColumn($taskId, $newColumnId);
+                echo json_encode(['success' => $result]);
+                exit;
+            }
+        }
+        
+        echo json_encode(['success' => false, 'error' => 'Invalid request']);
+        exit;
     }
 }
