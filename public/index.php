@@ -1,10 +1,17 @@
 <?php
-require_once __DIR__ . '/../vendor/autoload.php';  
+
+require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../src/Controllers/UserController.php';
 require_once __DIR__ . '/../src/Controllers/ProjectController.php';
 require_once __DIR__ . '/../src/Controllers/TaskController.php';
 require_once __DIR__ . '/../src/Controllers/DashboardController.php';
-require_once __DIR__ . '/../src/Controllers/KanbanBoardController.php';
+require_once __DIR__ . '/../src/Controllers/KanbanController.php';
+
+use App\Controllers\UserController;
+use App\Controllers\ProjectController;
+use App\Controllers\TaskController;
+use App\Controllers\DashboardController;
+use App\Controllers\KanbanController;
 
 session_start();
 
@@ -59,7 +66,7 @@ switch (true) {
         break;
 
     case preg_match('/^\/projects\/kanban\/(\d+)$/', $uri, $matches):
-        $controller = new KanbanBoardController();
+        $controller = new KanbanController();
         $controller->getBoard($matches[1]);
         break;
 

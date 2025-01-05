@@ -1,10 +1,18 @@
 <?php
 
+namespace App\Controllers;
+
 require_once __DIR__ . '/../Models/Task.php';
 require_once __DIR__ . '/../Models/Category.php';
 require_once __DIR__ . '/../Models/Tag.php';
 require_once __DIR__ . '/../Helpers/AuthHelper.php';
 require_once __DIR__ . '/../Helpers/ValidationHelper.php';
+
+use App\Models\Task;
+use App\Models\Category;
+use App\Models\Tag;
+use App\Helpers\AuthHelper;
+use App\Helpers\ValidationHelper;
 
 class TaskController {
     private $taskModel;

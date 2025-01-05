@@ -6,11 +6,24 @@ use PDO;
 
 class User {
 private $db;
-
+private $id;
+    private $name;
+    private $email;
+    private $roleId;
 public function __construct() {
 $this->db = Database::getInstance()->getConnection();
 }
 
+public function setName($name) {
+    $this->name = $name;
+}
+
+public function setEmail($email) {
+    $this->email = $email;
+}
+
+public function setRoleId($roleId) {
+    $this->roleId = $roleId;}
 public function register($name, $email, $password) {
 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 $sql = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
@@ -68,11 +81,18 @@ $stmt = $db->prepare($sql);
 $stmt->execute([$id]);
 return $stmt->fetch();
 }
+public function update() {
+    $stmt = $this->db->prepare("UPDATE users SET name = :name, email = :email, role_id = :role_id WHERE id = :id");
+    $stmt->bindParam(':name', $this->name);
+    $stmt->bindParam(':email', $this->email);
+    $stmt->bindParam(':role_id', $this->roleId);
+    $stmt->bindParam(':id', $this->id);
+    return $stmt->execute();
+}
+
 
 public static function delete($id) {
 $db = Database::getInstance()->getConnection();
 $sql = "DELETE FROM users WHERE id = ?";
 $stmt = $db->prepare($sql);
-return $stmt->execute([$id]);
-}
-}
+return $stmt->execute([$id]);}
