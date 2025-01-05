@@ -1,106 +1,70 @@
 <?php
 
-namespace App\Models;
-
 class Project {
-    public int $id;
-    public string $name;
-    public string $description;
-    private int $createdBy;
-    private array $teamMembers = [];
+    private $db;
 
-    public function __construct(string $name, string $description, int $createdBy) {
-        $this->name = $name;
-        $this->description = $description;
-        $this->createdBy = $createdBy;
+    public function __construct() {
+        $this->db = Database::getInstance()->getConnection();
     }
 
-    public function save(): void {
-        $db = \Database::getInstance()->getConnection();
-        $stmt = $db->prepare("INSERT INTO projects (name, description, created_by) VALUES (:name, :description, :created_by)");
-        $stmt->execute([
-            'name' => $this->name,
-            'description' => $this->description,
-            'created_by' => $this->createdBy
-        ]);
-        $this->id = $db->lastInsertId();
-    }
-
-    public static function findById(int $id): ?Project {
-        $db = \Database::getInstance()->getConnection();
-        $stmt = $db->prepare("SELECT * FROM projects WHERE id = :id");
-        $stmt->execute(['id' => $id]);
-        $project = $stmt->fetch();
-
-        if (!$project) {
-            return null;
+    public function createDefaultKanbanColumns($projectId) {
+        $defaultColumns = ['À faire', 'En cours', 'Terminé'];
+        $kanbanBoard = new KanbanBoard();
+        
+        foreach ($defaultColumns as $index => $columnName) {
+            $kanbanBoard->createColumn($projectId, $columnName, $index);
         }
-
-        $newProject = new Project($project['name'], $project['description'], $project['created_by']);
-        $newProject->id = $project['id'];
-        return $newProject;
     }
-public function create($name, $description, $userId, $isPublic) {
-    $sql = "INSERT INTO projects (name, description, user_id, is_public) VALUES (:name, :description, :user_id, :is_public)";
-    $stmt = $this->db->prepare($sql);
-    $stmt->bindParam(':name', $name);
-    $stmt->bindParam(':description', $description);
-    $stmt->bindParam(':user_id', $userId);
-    $stmt->bindParam(':is_public', $isPublic);
-    return $stmt->execute();
+
+    public function create($name, $description, $userId, $isPublic = false) {
+        $this->db->beginTransaction();
+        
+        try {
+            $sql = "INSERT INTO projects (name, description, user_id, is_public) VALUES (?, ?, ?, ?)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$name, $description, $userId, $isPublic]);
+            
+            $projectId = $this->db->lastInsertId();
+            $this->createDefaultKanbanColumns($projectId);
+            
+            $this->db->commit();
+            return $projectId;
+        } catch (\Exception $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
+    }
+
+    public function update($id, $name, $description, $isPublic) {
+        $sql = "UPDATE projects SET name = ?, description = ?, is_public = ? WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$name, $description, $isPublic, $id]);
+    }
+
+    public function delete($id) {
+        $sql = "DELETE FROM projects WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$id]);
+    }
+
+    public function getProjectById($id) {
+        $sql = "SELECT * FROM projects WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetch();
+    }
+
+    public function getProjectsByUserId($userId) {
+        $sql = "SELECT * FROM projects WHERE user_id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll();
+    }
+
+    public function getPublicProjects() {
+        $sql = "SELECT * FROM projects WHERE is_public = 1";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
 }
-
-public function update(): void {
-        $db = \Database::getInstance()->getConnection();
-        $stmt = $db->prepare("UPDATE projects SET name = :name, description = :description WHERE id = :id");
-        $stmt->execute([
-            'name' => $this->name,
-            'description' => $this->description,
-            'id' => $this->id
-        ]);
-    }
-
-     static function delete(int $id): void {
-        $db = \Database::getInstance()->getConnection();
-        $stmt = $db->prepare("DELETE FROM projects WHERE id = :id");
-        $stmt->execute(['id' => $id]);
-    }
-   public function addTeamMember(int $userId): void {
-        $db = \Database::getInstance()->getConnection();
-        $stmt = $db->prepare("INSERT INTO project_members (project_id, user_id) VALUES (:project_id, :user_id)");
-        $stmt->execute([
-            'project_id' => $this->id,
-            'user_id' => $userId
-        ]);
-        $this->teamMembers[] = $userId;
-    }
-
-    public function removeTeamMember(int $userId): void {
-        $db = \Database::getInstance()->getConnection();
-        $stmt = $db->prepare("DELETE FROM project_members WHERE project_id = :project_id AND user_id = :user_id");
-        $stmt->execute([
-            'project_id' => $this->id,
-            'user_id' => $userId
-        ]);
-        $this->teamMembers = array_diff($this->teamMembers, [$userId]);
-    }
-
-    public function getTeamMembers(): array {
-        $db = \Database::getInstance()->getConnection();
-        $stmt = $db->prepare("SELECT u.* FROM users u JOIN project_members pm ON u.id = pm.user_id WHERE pm.project_id = :project_id");
-        $stmt->execute(['project_id' => $this->id]);
-        return $stmt->fetchAll();
-    }
-
-    public static function getAll(): array {
-        $db = \Database::getInstance()->getConnection();
-        $stmt = $db->query("SELECT * FROM projects");
-        return $stmt->fetchAll();
-    }
-
-    public static function getPublicProjects(): array {
-        $db = \Database::getInstance()->getConnection();
-        }
-    }  $stmt = $db->query("SELECT * FROM projects WHERE is_public = 1");
-        return $stmt->fetchAll();
-    

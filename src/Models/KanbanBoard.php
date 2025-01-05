@@ -1,62 +1,34 @@
 <?php
 
-namespace App\Models;
-
 class KanbanBoard {
-    private int $id;
-    private int $projectId;
-    private array $columns;
+    private $db;
 
-    public function __construct(int $projectId) {
-        $this->projectId = $projectId;
-        $this->columns = ['To Do', 'In Progress', 'Done'];
+    public function __construct() {
+        $this->db = Database::getInstance()->getConnection();
     }
 
-    public function save(): void {
-        $db = \Database::getInstance()->getConnection();
-        $stmt = $db->prepare("INSERT INTO kanban_boards (project_id, columns) VALUES (:project_id, :columns)");
-        $stmt->execute([
-            'project_id' => $this->projectId,
-            'columns' => json_encode($this->columns)
-        ]);
-        $this->id = $db->lastInsertId();
+    public function getColumnsByProjectId($projectId) {
+        $sql = "SELECT * FROM kanban_columns WHERE project_id = ? ORDER BY `order`";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$projectId]);
+        return $stmt->fetchAll();
     }
 
-    public static function findByProjectId(int $projectId): ?KanbanBoard {
-        $db = \Database::getInstance()->getConnection();
-        $stmt = $db->prepare("SELECT * FROM kanban_boards WHERE project_id = :project_id");
-        $stmt->execute(['project_id' => $projectId]);
-        $board = $stmt->fetch();
-
-        if (!$board) {
-            return null;
-        }
-
-        $kanbanBoard = new KanbanBoard($board['project_id']);
-        $kanbanBoard->id = $board['id'];
-        $kanbanBoard->columns = json_decode($board['columns'], true);
-        return $kanbanBoard;
+    public function createColumn($projectId, $name, $order) {
+        $sql = "INSERT INTO kanban_columns (project_id, name, `order`) VALUES (?, ?, ?)";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$projectId, $name, $order]);
     }
 
-    public function updateColumns(array $columns): void {
-        $this->columns = $columns;
-        $db = \Database::getInstance()->getConnection();
-        $stmt = $db->prepare("UPDATE kanban_boards SET columns = :columns WHERE id = :id");
-        $stmt->execute([
-            'columns' => json_encode($this->columns),
-            'id' => $this->id
-        ]);
+    public function updateColumnOrder($columnId, $newOrder) {
+        $sql = "UPDATE kanban_columns SET `order` = ? WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$newOrder, $columnId]);
     }
 
-    public function getId(): int {
-        return $this->id;
-    }
-
-    public function getProjectId(): int {
-        return $this->projectId;
-    }
-
-    public function getColumns(): array {
-        return $this->columns;
+    public function deleteColumn($columnId) {
+        $sql = "DELETE FROM kanban_columns WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$columnId]);
     }
 }
