@@ -1,9 +1,9 @@
 <?php
-
-namespace App\Controllers;
-
-use App\Models\User; 
-
+require_once __DIR__ . '/../Models/Project.php';
+require_once __DIR__ . '/../Models/Task.php';
+require_once __DIR__ . '/../Helpers/AuthHelper.php';
+require_once __DIR__ . '/../Helpers/ValidationHelper.php';
+require_once __DIR__ . '/../Models/User.php';
 class UserController {
     private $userModel;
 

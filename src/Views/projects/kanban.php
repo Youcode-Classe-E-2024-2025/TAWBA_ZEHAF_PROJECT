@@ -1,5 +1,5 @@
 <?php ob_start(); ?>
-
+<script src="https://cdn.tailwindcss.com"></script>
 <div class="kanban-board" data-project-id="<?php echo $project['id']; ?>">
     <?php foreach ($boardData as $columnId => $column): ?>
     <div class="kanban-column" data-column-id="<?php echo $columnId; ?>">

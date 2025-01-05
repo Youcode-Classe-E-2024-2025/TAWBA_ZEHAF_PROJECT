@@ -1,5 +1,5 @@
 <?php ob_start(); ?>
-
+<script src="https://cdn.tailwindcss.com"></script>
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="max-w-3xl mx-auto">
         <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate mb-8">

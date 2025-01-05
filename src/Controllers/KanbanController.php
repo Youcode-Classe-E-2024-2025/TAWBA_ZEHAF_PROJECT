@@ -6,7 +6,7 @@ use App\Models\KanbanBoard;
 use App\Models\Task;
 use App\Models\Project;
 use App\Middleware\AuthMiddleware;
-
+require_once __DIR__ . '/../Models/Project.php';
 class KanbanController {
     public function __construct() {
         AuthMiddleware::requireLogin();

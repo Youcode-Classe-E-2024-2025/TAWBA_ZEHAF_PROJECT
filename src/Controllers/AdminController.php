@@ -1,12 +1,10 @@
 <?php
-
-namespace App\Controllers;
+namespace App\Controllers; 
 
 use App\Models\User; 
 use App\Models\Project;
 use App\Models\Role;
 use App\Middleware\AdminMiddleware;
-
 class AdminController {
     public function __construct() {
         AdminMiddleware::requireAdmin();
