@@ -1,4 +1,9 @@
 <?php
+namespace App\Controllers;
+
+use App\Models\Project;
+use App\Models\Task;
+use App\Models\User;
 require_once __DIR__ . '/../Views/Modles/Project.php';
 class ProjectController {
     private $projectModel;

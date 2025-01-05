@@ -1,6 +1,11 @@
 <?php
 use App\Controllers\ProjectController;
-
+require_once 'src\Models\Task.php';
+require_once 'src\Models\Category.php';
+require_once 'src\Models\Tag.php';
+use App\Models\Task;
+use App\Models\Category;
+use App\Models\Tag;
 
 class TaskController {
     private $taskModel;

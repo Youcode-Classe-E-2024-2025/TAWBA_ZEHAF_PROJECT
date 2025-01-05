@@ -3,9 +3,9 @@
 namespace App\Models;
 
 class Project {
-    private int $id;
-    private string $name;
-    private string $description;
+    public int $id;
+    public string $name;
+    public string $description;
     private int $createdBy;
     private array $teamMembers = [];
 
@@ -40,8 +40,17 @@ class Project {
         $newProject->id = $project['id'];
         return $newProject;
     }
+public function create($name, $description, $userId, $isPublic) {
+    $sql = "INSERT INTO projects (name, description, user_id, is_public) VALUES (:name, :description, :user_id, :is_public)";
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindParam(':name', $name);
+    $stmt->bindParam(':description', $description);
+    $stmt->bindParam(':user_id', $userId);
+    $stmt->bindParam(':is_public', $isPublic);
+    return $stmt->execute();
+}
 
-    public function update(): void {
+public function update(): void {
         $db = \Database::getInstance()->getConnection();
         $stmt = $db->prepare("UPDATE projects SET name = :name, description = :description WHERE id = :id");
         $stmt->execute([
@@ -51,13 +60,12 @@ class Project {
         ]);
     }
 
-    public static function delete(int $id): void {
+     static function delete(int $id): void {
         $db = \Database::getInstance()->getConnection();
         $stmt = $db->prepare("DELETE FROM projects WHERE id = :id");
         $stmt->execute(['id' => $id]);
     }
-
-    public function addTeamMember(int $userId): void {
+   public function addTeamMember(int $userId): void {
         $db = \Database::getInstance()->getConnection();
         $stmt = $db->prepare("INSERT INTO project_members (project_id, user_id) VALUES (:project_id, :user_id)");
         $stmt->execute([
@@ -92,7 +100,7 @@ class Project {
 
     public static function getPublicProjects(): array {
         $db = \Database::getInstance()->getConnection();
-        $stmt = $db->query("SELECT * FROM projects WHERE is_public = 1");
+        }
+    }  $stmt = $db->query("SELECT * FROM projects WHERE is_public = 1");
         return $stmt->fetchAll();
-    }
-}
+    
