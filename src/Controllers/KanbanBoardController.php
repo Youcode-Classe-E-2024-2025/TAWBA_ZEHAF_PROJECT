@@ -1,46 +1,34 @@
 <?php
 
-require_once __DIR__ . '/../Models/KanbanBoard.php';
-require_once __DIR__ . '/../Models/Task.php';
-require_once __DIR__ . '/../Helpers/AuthHelper.php';
-
-class KanbanBoardController {
-    private $kanbanBoardModel;
-    private $taskModel;
+class KanbanBoard {
+    private $db;
 
     public function __construct() {
-        $this->kanbanBoardModel = new KanbanBoard();
-        $this->taskModel = new Task();
+        $this->db = Database::getInstance()->getConnection();
     }
 
-    public function getBoard($projectId) {
-        AuthHelper::requireLogin();
-        $columns = $this->kanbanBoardModel->getColumnsByProjectId($projectId);
-        $tasks = $this->taskModel->getTasksByProjectId($projectId);
-        
-        $boardData = [];
-        foreach ($columns as $column) {
-            $boardData[$column['id']] = [
-                'name' => $column['name'],
-                'tasks' => []
-            ];
-        }
-        
-        foreach ($tasks as $task) {
-            $columnId = $task['column_id'] ?? $columns[0]['id'];
-            $boardData[$columnId]['tasks'][] = $task;
-        }
-        
-        return $boardData;
+    public function getColumnsByProjectId($projectId) {
+        $sql = "SELECT * FROM kanban_columns WHERE project_id = ? ORDER BY `order`";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$projectId]);
+        return $stmt->fetchAll();
     }
 
-    public function moveTask($taskId, $newColumnId) {
-        AuthHelper::requireLogin();
-        return $this->taskModel->updateTaskColumn($taskId, $newColumnId);
+    public function createColumn($projectId, $name, $order) {
+        $sql = "INSERT INTO kanban_columns (project_id, name, `order`) VALUES (?, ?, ?)";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$projectId, $name, $order]);
     }
 
     public function updateColumnOrder($columnId, $newOrder) {
-        AuthHelper::requireLogin();
-        return $this->kanbanBoardModel->updateColumnOrder($columnId, $newOrder);
+        $sql = "UPDATE kanban_columns SET `order` = ? WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$newOrder, $columnId]);
+    }
+
+    public function deleteColumn($columnId) {
+        $sql = "DELETE FROM kanban_columns WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$columnId]);
     }
 }
