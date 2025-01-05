@@ -1,5 +1,10 @@
 <?php
 
+namespace App\Models; // Ensure this is correct
+
+use PDO;
+use App\Database; // Assuming you're using a Database class for DB connection
+
 class User {
     private $db;
 
@@ -38,5 +43,37 @@ class User {
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();
+    }
+
+    // Static methods that might be needed for your AdminController
+    public static function count() {
+        $db = Database::getInstance()->getConnection();
+        $sql = "SELECT COUNT(*) FROM users";
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchColumn();
+    }
+
+    public static function getAll() {
+        $db = Database::getInstance()->getConnection();
+        $sql = "SELECT * FROM users";
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public static function findById($id) {
+        $db = Database::getInstance()->getConnection();
+        $sql = "SELECT * FROM users WHERE id = ?";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetch();
+    }
+
+    public static function delete($id) {
+        $db = Database::getInstance()->getConnection();
+        $sql = "DELETE FROM users WHERE id = ?";
+        $stmt = $db->prepare($sql);
+        return $stmt->execute([$id]);
     }
 }

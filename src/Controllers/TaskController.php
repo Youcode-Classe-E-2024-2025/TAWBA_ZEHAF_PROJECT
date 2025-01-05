@@ -29,7 +29,7 @@ class TaskController {
 
             if (empty($errors)) {
                 if ($this->taskModel->create($title, $description, $projectId, $assignedTo, $status)) {
-                    $taskId = $this->taskModel->getLastInsertId();
+                    $taskId = $this->taskModel->getLastInsertedId();
 
                     // Handle categories
                     if (isset($_POST['categories'])) {
@@ -119,7 +119,7 @@ class TaskController {
             $newColumnId = $_POST['column_id'] ?? null;
             
             if ($taskId && $newColumnId) {
-                $result = $this->taskModel->updateTaskColumn($taskId, $newColumnId);
+                $result = $this->taskModel->updateColumn($taskId, $newColumnId);
                 echo json_encode(['success' => $result]);
                 exit;
             }

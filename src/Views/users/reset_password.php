@@ -10,12 +10,13 @@
         <?php
         if (isset($error)) {
             echo "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative' role='alert'>";
-            echo "<p>{$error}</p>";
+            echo "<p>
+</p>";
             echo "</div>";
         }
         ?>
         <form class="mt-8 space-y-6" action="" method="POST" id="resetPasswordForm">
-            <input type="hidden" name="token" value="<?php echo htmlspecialchars($token); ?>">
+            <input type="hidden" name="token" value="<?php echo htmlspecialchars($token ?? ''); ?>">
             <div class="rounded-md shadow-sm -space-y-px">
                 <div>
                     <label for="password" class="sr-only">New Password</label>
@@ -51,7 +52,7 @@ document.getElementById('resetPasswordForm').addEventListener('submit', function
     if (!password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)) {
         errors.push(
             "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number."
-            );
+        );
     }
 
     // Confirm password validation

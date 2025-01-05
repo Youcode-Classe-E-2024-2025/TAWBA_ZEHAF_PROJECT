@@ -1,6 +1,7 @@
 <?php
 
-require_once  'config\Database.php';
+require_once __DIR__ . '/../vendor/autoload.php';
+echo __DIR__. '/../config/Database.php';
 require_once __DIR__ . '/../src/Controllers/UserController.php';
 require_once __DIR__ . '/../src/Controllers/ProjectController.php';
 require_once __DIR__ . '/../src/Controllers/TaskController.php';

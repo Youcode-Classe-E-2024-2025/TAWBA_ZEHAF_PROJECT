@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controllers;
-require_once 'src\Models\User.php';
+
 use App\Models\User;
 use App\Models\Project;
 use App\Models\Role;
