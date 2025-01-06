@@ -35,7 +35,7 @@ ob_start();
 <?php echo $kanbanContent; ?>
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
-<script src="/js/kanban.js"></script>
+<script src="public\js\kanban.js"></script>
 
 <?php
 $content = ob_get_clean();

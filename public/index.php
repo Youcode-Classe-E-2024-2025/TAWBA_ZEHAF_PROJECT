@@ -16,21 +16,22 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 // Simple routing
 switch (true) {
     case $uri === '/':
+        case $uri === '/register':
+            $controller = new UserController();
+            $controller->register();
+            break;
+    
     case $uri === '/dashboard':
         $controller = new DashboardController();
         $controller->index();
         break;
 
-    case $uri === '/login':
-        $controller = new UserController();
-        $controller->login();
-        break;
-
-    case $uri === '/register':
-        $controller = new UserController();
-        $controller->register();
-        break;
-
+        case $uri === '/login':
+            echo "Login route accessed"; 
+            $controller = new UserController();
+            $controller->login();
+            break;
+  
     case $uri === '/logout':
         $controller = new UserController();
         $controller->logout();
