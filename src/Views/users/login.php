@@ -48,22 +48,22 @@
 </div>
 
 <script>
-document.getElementById('loginForm').addEventListener('submit', function(event) {
-    var email = document.getElementById('email-address').value;
-    var password = document.getElementById('password').value;
-    var errors = [];
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        var email = document.getElementById('email-address').value;
+        var password = document.getElementById('password').value;
+        var errors = [];
 
-    if (!email || !/\S+@\S+\.\S+/.test(email)) {
-        errors.push("Please enter a valid email address.");
-    }
+        if (!email || !/\S+@\S+\.\S+/.test(email)) {
+            errors.push("Please enter a valid email address.");
+        }
 
-    if (!password || password.length < 8) {
-        errors.push("Password must be at least 8 characters long.");
-    }
+        if (!password || password.length < 8) {
+            errors.push("Password must be at least 8 characters long.");
+        }
 
-    if (errors.length > 0) {
-        event.preventDefault();
-        alert(errors.join("\n"));
-    }
-});
+        if (errors.length > 0) {
+            event.preventDefault();
+            alert(errors.join("\n"));
+        }
+    });
 </script>

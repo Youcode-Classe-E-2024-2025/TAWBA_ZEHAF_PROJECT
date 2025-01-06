@@ -20,33 +20,35 @@ switch (true) {
             $controller = new UserController();
             $controller->register();
             break;
-    
-    case $uri === '/dashboard':
-        $controller = new DashboardController();
-        $controller->index();
-        break;
-
         case $uri === '/login':
             echo "Login route accessed"; 
             $controller = new UserController();
             $controller->login();
             break;
+        case $uri === '/projects':
+                $controller = new ProjectController();
+                $controller->index();
+                break;
+                case $uri === '/projects/create':
+                    $controller = new ProjectController();
+                    $controller->create();
+                    break;
+            
+    case $uri === '/dashboard':
+        $controller = new DashboardController();
+        $controller->index();
+        break;
+
+        
   
     case $uri === '/logout':
         $controller = new UserController();
         $controller->logout();
         break;
 
-    case $uri === '/projects':
-        $controller = new ProjectController();
-        $controller->index();
-        break;
+   
 
-    case $uri === '/projects/create':
-        $controller = new ProjectController();
-        $controller->create();
-        break;
-
+    
     case preg_match('/^\/projects\/edit\/(\d+)$/', $uri, $matches):
         $controller = new ProjectController();
         $controller->edit($matches[1]);
@@ -119,6 +121,7 @@ switch (true) {
 
     default:
         http_response_code(404);
-        require_once __DIR__ . '/../src/Views/errors/404.php';
+        require_once __DIR__ . '/../src/Views/404.php';
+
         break;
 }

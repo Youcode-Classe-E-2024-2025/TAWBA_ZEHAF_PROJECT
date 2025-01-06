@@ -58,7 +58,8 @@ class Project {
     }
 
     public function getProjectsByUserId($userId) {
-        $sql = "SELECT * FROM projects WHERE user_id = ?";
+        // $sql = "SELECT * FROM projects WHERE user_id = ?";
+        $sql = "SELECT * FROM projects WHERE created_by = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$userId]);
         return $stmt->fetchAll();

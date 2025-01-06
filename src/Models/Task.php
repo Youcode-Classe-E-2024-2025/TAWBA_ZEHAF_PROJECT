@@ -27,12 +27,12 @@ class Task {
         return $stmt->execute([$id]);
     }
 
-    public function getTaskById($id) {
-        $sql = "SELECT * FROM tasks WHERE id = ?";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$id]);
-        return $stmt->fetch();
-    }
+    // public function getTaskById($id) {
+    //     $sql = "SELECT * FROM tasks WHERE id = ?";
+    //     $stmt = $this->db->prepare($sql);
+    //     $stmt->execute([$id]);
+    //     return $stmt->fetch();
+    // }
 
     public function getTasksByProjectId($projectId) {
         $sql = "SELECT * FROM tasks WHERE project_id = ?";
@@ -66,6 +66,16 @@ class Task {
     }
 
 
+    public function getTaskById($id) {
+    
+        $stmt = $this->db->prepare("SELECT * FROM tasks WHERE id = ?");
+    
+        $stmt->execute([$id]);
+    
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    }
+    
     public static function getByProjectId($projectId) {
 
         // Assuming you have a database connection setup

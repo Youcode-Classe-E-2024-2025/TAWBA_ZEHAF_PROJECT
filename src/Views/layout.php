@@ -33,7 +33,7 @@
                     <a href="/logout"
                         class="py-2 px-2 font-medium text-white bg-green-500 rounded hover:bg-green-400 transition duration-300">Logout</a>
                     <?php else: ?>
-                    <a href="src\Views\users\login.php"
+                    <a href="/login"
                         class="py-2 px-2 font-medium text-gray-500 rounded hover:bg-green-500 hover:text-white transition duration-300">Login</a>
                     <a href="src\Views\users\register.php"
                         class="py-2 px-2 font-medium text-white bg-green-500 rounded hover:bg-green-400 transition duration-300">Register</a>
