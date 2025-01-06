@@ -86,3 +86,7 @@ VALUES
     (3, 7), (3, 8), (3, 9), 
     (4, 6), (4, 10),
     (5, 9), (5, 10);
+    
+CREATE USER IF NOT EXISTS 'users'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON project_management.* TO 'users'@'localhost';
+FLUSH PRIVILEGES;

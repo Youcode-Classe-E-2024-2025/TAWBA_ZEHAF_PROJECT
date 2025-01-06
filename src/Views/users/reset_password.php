@@ -1,5 +1,5 @@
 <?php require_once __DIR__ . '/../layout.php'; ?>
-<script src="https://cdn.tailwindcss.com"></script>
+
 <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8">
         <div>
@@ -10,8 +10,7 @@
         <?php
         if (isset($error)) {
             echo "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative' role='alert'>";
-            echo "<p>
-</p>";
+            echo "<p>" . htmlspecialchars((string)$error) . "</p>";
             echo "</div>";
         }
         ?>
