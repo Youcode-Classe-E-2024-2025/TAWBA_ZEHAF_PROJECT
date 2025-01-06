@@ -27,4 +27,31 @@ class AuthHelper {
         }
         session_destroy();
     }
+
+    public static function requireAdmin() {
+
+        if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
+
+            header('Location: src\Views\users\login.php');
+
+            exit;
+
+        }
+
+    }
+
+
+    public static function requireAuth() {
+
+        if (!isset($_SESSION['user_id'])) {
+
+            header('Location: /login');
+
+            exit;
+
+        }
+
+    }
+
+
 }

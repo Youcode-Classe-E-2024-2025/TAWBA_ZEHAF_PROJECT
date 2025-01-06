@@ -1,5 +1,7 @@
 <?php
-namespace Config; 
+
+require_once __DIR__ . '/../../config/Database.php';
+
 class Task {
     private $db;
 
@@ -57,4 +59,26 @@ class Task {
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([$columnId, $taskId]);
     }
+    public function getLastInsertedId() {
+
+        return $this->db->lastInsertId();
+
+    }
+
+
+    public static function getByProjectId($projectId) {
+
+        // Assuming you have a database connection setup
+
+        $database = new Database();
+        $db = $database->getConnection();
+
+        $stmt = $db->prepare('SELECT * FROM tasks WHERE project_id = ?');
+
+        $stmt->execute([$projectId]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    }
+
 }

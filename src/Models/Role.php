@@ -1,20 +1,19 @@
 <?php
-namespace Config; 
-//namespace App\Models;
 
 class Role {
+    private $db;
     private int $id;
     private string $name;
 
     public function __construct(string $name) {
+        $this->db = Database::getInstance()->getConnection();
         $this->name = $name;
     }
 
     public function save() {
-        $db = Database::getInstance()->getConnection();
-        $stmt = $db->prepare("INSERT INTO roles (name) VALUES (:name)");
+        $stmt = $this->db->prepare("INSERT INTO roles (name) VALUES (:name)");
         $stmt->execute(['name' => $this->name]);
-        $this->id = $db->lastInsertId();
+        $this->id = $this->db->lastInsertId();
     }
 
     public static function getAll() {
@@ -37,5 +36,11 @@ class Role {
 
     public function setName(string $name): void {
         $this->name = $name;
+    }
+
+    public static function count() {
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->query("SELECT COUNT(*) FROM roles");
+        return $stmt->fetchColumn();
     }
 }

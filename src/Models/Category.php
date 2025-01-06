@@ -1,8 +1,5 @@
 <?php
-namespace Config;
-namespace App\Models;
 
-use App\Database;
 class Category {
     private $db;
 

@@ -1,11 +1,8 @@
 <?php
-
-namespace App\Controllers;
-
-use App\Database;
-use App\Models\Project;
-use App\Models\Task;
-use App\Middleware\AuthMiddleware;
+require_once __DIR__ . '/../Models/User.php';
+require_once __DIR__ . '/../Models/Project.php';
+require_once __DIR__ . '/../Models/Role.php';
+require_once __DIR__ . '/../Helpers/AuthHelper.php';
 
 class ChartDataController {
     public function __construct() {
@@ -33,7 +30,7 @@ class ChartDataController {
     }
 
     private function getProjectData() {
-        $db = Database::getInstance()->getConnection();
+        $db = \Database::getInstance()->getConnection();
         $stmt = $db->query("SELECT status, COUNT(*) as count FROM projects GROUP BY status");
         $rows = $stmt->fetchAll();
 
@@ -44,7 +41,7 @@ class ChartDataController {
     }
 
     private function getTaskData() {
-        $db = Database::getInstance()->getConnection();
+        $db = \Database::getInstance()->getConnection();
         $stmt = $db->query("SELECT status, COUNT(*) as count FROM tasks GROUP BY status");
         $rows = $stmt->fetchAll();
 
@@ -55,7 +52,7 @@ class ChartDataController {
     }
 
     private function getProjectProgressData() {
-        $db =Database::getInstance()->getConnection();
+        $db = \Database::getInstance()->getConnection();
         $stmt = $db->query("
             SELECT 
                 DATE_FORMAT(created_at, '%Y-%m') as month,
@@ -75,7 +72,7 @@ class ChartDataController {
     }
 
     private function getTaskCategoryData() {
-        $db = Database::getInstance()->getConnection();
+        $db = \Database::getInstance()->getConnection();
         $stmt = $db->query("
             SELECT 
                 category,

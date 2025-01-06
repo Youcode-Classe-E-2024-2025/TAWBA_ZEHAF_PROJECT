@@ -1,11 +1,6 @@
 <?php
 
-namespace App\Helpers;
-
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-
-class Emailhleper
+class EmailHelper
 {
     public static function sendVerificationEmail(string $email, string $token): bool
     {
@@ -27,7 +22,7 @@ class Emailhleper
 
     private static function sendEmail(string $to, string $subject, string $body): bool
     {
-        $mail = new PHPMailer(true);
+        $mail = new PHPMailer\PHPMailer\PHPMailer(true);
 
         try {
             //Server settings
@@ -36,7 +31,7 @@ class Emailhleper
             $mail->SMTPAuth   = true;
             $mail->Username   = 'your_username';
             $mail->Password   = 'your_password';
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
 
             //Recipients
@@ -50,7 +45,7 @@ class Emailhleper
 
             $mail->send();
             return true;
-        } catch (Exception $e) {
+        } catch (PHPMailer\PHPMailer\Exception $e) {
             error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
             return false;
         }

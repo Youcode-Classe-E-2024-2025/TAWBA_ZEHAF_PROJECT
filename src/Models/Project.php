@@ -1,5 +1,8 @@
 <?php
-namespace Config; 
+
+require_once __DIR__ . '/../../config/Database.php';
+require_once __DIR__ . '/KanbanBoard.php';
+
 class Project {
     private $db;
 
@@ -67,4 +70,25 @@ class Project {
         $stmt->execute();
         return $stmt->fetchAll();
     }
+
+    public static function count() {
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->query("SELECT COUNT(*) FROM projects");
+        return $stmt->fetchColumn();
+    }
+
+    public static function getAll() {
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->query("SELECT * FROM projects");
+        return $stmt->fetchAll();
+    }
+
+    public static function findById($id) {
+        $db = Database::getInstance()->getConnection();
+        $stmt = $db->prepare("SELECT * FROM projects WHERE id = ?");
+        $stmt->execute([$id]);
+        return $stmt->fetch();
+    }
+
+    
 }

@@ -1,18 +1,8 @@
 <?php
 
-namespace App\Controllers;
-
-require_once __DIR__ . '/../Models/Project.php';
-require_once __DIR__ . '/../Models/Task.php';
-require_once __DIR__ . '/../Helpers/AuthHelper.php';
-require_once __DIR__ . '/../Helpers/ValidationHelper.php';
 require_once __DIR__ . '/../Models/User.php';
-
-use App\Models\User;
-use App\Models\Project;
-use App\Models\Task;
-use App\Helpers\AuthHelper;
-use App\Helpers\ValidationHelper;
+require_once __DIR__ . '/../Helpers/ValidationHelper.php';
+require_once __DIR__ . '/../Helpers/AuthHelper.php';
 
 class UserController {
     private $userModel;

@@ -1,21 +1,23 @@
 <?php
 
-namespace App\Controllers;
-
-use App\Models\KanbanBoard;
-use App\Models\Task;
-use App\Models\Project;
-use App\Middleware\AuthMiddleware;
-
-require_once __DIR__ . '/../Models/Project.php';
 require_once __DIR__ . '/../Models/KanbanBoard.php';
+require_once __DIR__ . '/../Models/Task.php';
+require_once __DIR__ . '/../Models/Project.php';
+require_once __DIR__ . '/../Helpers/AuthHelper.php';
 
 class KanbanController {
+    private $kanbanBoardModel;
+    private $taskModel;
+    private $projectModel;
+
     public function __construct() {
-        AuthMiddleware::requireLogin();
+        $this->kanbanBoardModel = new KanbanBoard();
+        $this->taskModel = new Task();
+        $this->projectModel = new Project();
     }
 
-    public function show(int $projectId) {
+    public function show($projectId) {
+        AuthHelper::requireAuth();
         $project = Project::findById($projectId);
         if (!$project) {
             header('Location: /projects?error=Project not found');
@@ -24,8 +26,8 @@ class KanbanController {
 
         $kanbanBoard = KanbanBoard::findByProjectId($projectId);
         if (!$kanbanBoard) {
-            $kanbanBoard = new KanbanBoard($projectId);
-            $kanbanBoard->save();
+            $kanbanBoard = new KanbanBoard();
+            $kanbanBoard->createForProject($projectId);
         }
 
         $tasks = Task::getByProjectId($projectId);
@@ -35,6 +37,7 @@ class KanbanController {
     }
 
     public function updateTaskColumn() {
+        AuthHelper::requireAuth();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $taskId = $_POST['task_id'] ?? null;
             $newColumnId = $_POST['new_column'] ?? null;
@@ -51,7 +54,8 @@ class KanbanController {
         exit;
     }
 
-    public function updateColumns(int $projectId) {
+    public function updateColumns($projectId) {
+        AuthHelper::requireAuth();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $columns = $_POST['columns'] ?? null;
 

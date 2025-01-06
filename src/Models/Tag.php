@@ -1,8 +1,5 @@
 <?php
 
-
-// namespace App\Models;
-namespace Config; 
 class Tag {
     private $db;
 

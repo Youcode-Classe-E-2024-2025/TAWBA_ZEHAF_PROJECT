@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Controllers;
-namespace App\Models; 
-use App\Models\User;
-use App\Models\Project;
-use App\Models\Role;
-use App\Middleware\AuthMiddleware;
+require_once __DIR__ . '/../Models/User.php';
+require_once __DIR__ . '/../Models/Project.php';
+require_once __DIR__ . '/../Models/Role.php';
+require_once __DIR__ . '/../Helpers/AuthHelper.php';
 
 class AdminController {
     public function __construct() {
-        AuthMiddleware::requireAdmin();
+        AuthHelper::requireAdmin();
     }
 
     public function index() {
@@ -107,7 +105,8 @@ class AdminController {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            Project::delete($id);
+            $project = new Project();
+            $project->delete($id);
             header('Location: /admin/projects?message=Project deleted successfully');
             exit;
         }

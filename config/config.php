@@ -1,8 +1,8 @@
 <?php
-
+// config.php
 return [
-    'db_host' => 'localhost',
-    'db_name' => 'project_management',
-    'db_user' => 'root',
-    'db_pass' => '',
+    'localhost' => '127.0.0.1',         // Database host
+    'project_management' => 'your_db_name',  // Database name
+    'db_user' => 'your_db_user',        // Database username
+    'db_pass' => 'your_db_password',    // Database password
 ];
