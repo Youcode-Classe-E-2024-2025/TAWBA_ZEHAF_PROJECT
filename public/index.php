@@ -10,45 +10,44 @@ require_once __DIR__ . '/../src/Controllers/TaskController.php';
 require_once __DIR__ . '/../src/Controllers/DashboardController.php';
 require_once __DIR__ . '/../src/Controllers/KanbanController.php';
 require_once __DIR__ . '/../src/Controllers/AdminController.php';
+require_once __DIR__ . '/../src/Middleware/AuthMiddleware.php';
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 // Simple routing
 switch (true) {
     case $uri === '/':
-        case $uri === '/register':
-            $controller = new UserController();
-            $controller->register();
-            break;
-        case $uri === '/login':
-            echo "Login route accessed"; 
-            $controller = new UserController();
-            $controller->login();
-            break;
-        case $uri === '/projects':
-                $controller = new ProjectController();
-                $controller->index();
-                break;
-        case $uri === '/projects/create':
-                    $controller = new ProjectController();
-                    $controller->create();
-                    break;
-            
     case $uri === '/dashboard':
+        AuthMiddleware::requireLogin();
         $controller = new DashboardController();
         $controller->index();
         break;
 
-        
-  
+    case $uri === '/login':
+        $controller = new UserController();
+        $controller->login();
+        break;
+
+    case $uri === '/register':
+        $controller = new UserController();
+        $controller->register();
+        break;
+
     case $uri === '/logout':
         $controller = new UserController();
         $controller->logout();
         break;
 
-   
+    case $uri === '/projects':
+        $controller = new ProjectController();
+        $controller->index();
+        break;
 
-    
+    case $uri === '/projects/create':
+        $controller = new ProjectController();
+        $controller->create();
+        break;
+
     case preg_match('/^\/projects\/edit\/(\d+)$/', $uri, $matches):
         $controller = new ProjectController();
         $controller->edit($matches[1]);
@@ -119,9 +118,13 @@ switch (true) {
         $controller->deleteProject($matches[1]);
         break;
 
+    case $uri === '/projects/search':
+        $controller = new ProjectController();
+        $controller->search();
+        break;
+
     default:
         http_response_code(404);
-        require_once __DIR__ . '/../src/Views/404.php';
-
+        require_once __DIR__ . '/../src/Views/errors/404.php';
         break;
 }

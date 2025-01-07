@@ -26,13 +26,13 @@ class Task {
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([$id]);
     }
+
     public function getTaskById($id) {
         $sql = "SELECT * FROM tasks WHERE id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
 
     public function getTasksByProjectId($projectId) {
         $sql = "SELECT * FROM tasks WHERE project_id = ?";
@@ -53,18 +53,21 @@ class Task {
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([$status, $id]);
     }
+
+    public function updateTaskColumn($taskId, $columnId) {
+        $sql = "UPDATE tasks SET column_id = ? WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute([$columnId, $taskId]);
+    }
+
     public function getByProjectId($projectId) {
         $sql = "SELECT * FROM tasks WHERE project_id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$projectId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    public function updateTaskColumn($taskId, $columnId) {
-        $sql = "UPDATE tasks SET column_id = ? WHERE id = ?";
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute([$columnId, $taskId]);
-    }
-    public function getLastInsertedId() {
 
-        return $this->db->lastInsertId();}
+    public function getLastInsertedId() {
+        return $this->db->lastInsertId();
     }
+}

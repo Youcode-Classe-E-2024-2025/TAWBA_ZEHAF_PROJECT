@@ -13,11 +13,27 @@ class DashboardController {
         $this->taskModel = new Task();
     }
 
-    public function index() {
-        AuthHelper::requireLogin();
-        $userId = $_SESSION['user_id'];
-        $projects = $this->projectModel->getProjectsByUserId($userId);
-        $tasks = $this->taskModel->getTasksByUserId($userId);
-        require_once __DIR__ . 'src\Views\dashboard\dashboard.php';
-    }
+   // In your DashboardController.php
+public function index() {
+    AuthHelper::requireLogin();
+    $userId = $_SESSION['user_id'];
+    $projects = $this->projectModel->getProjectsByUserId($userId);
+    $tasks = $this->taskModel->getTasksByUserId($userId);
+
+    // Add the stats for the dashboard (replace with your actual logic for stats)
+    $projectStats = [
+        'totalProjects' => count($projects),
+    ];
+
+    $taskStats = [
+        'totalTasks' => count($tasks),
+        'tasksByStatus' => [
+            'Done' => count(array_filter($tasks, fn($task) => $task['status'] === 'Done')),
+        ],
+    ];
+
+    // Pass both projectStats and taskStats to the view
+    require_once __DIR__ . '/../Views/dashboard/dashboard.php';
+}
+
 }

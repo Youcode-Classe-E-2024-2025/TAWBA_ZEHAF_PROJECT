@@ -6,15 +6,15 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div class="bg-white rounded-lg shadow p-6">
             <h2 class="text-xl font-semibold mb-4">Total Projects</h2>
-            <p class="text-4xl font-bold"><?= $projectStats['totalProjects'] ?></p>
+            <p class="text-4xl font-bold"><?= $projectStats['totalProjects'] ?? 0 ?></p>
         </div>
         <div class="bg-white rounded-lg shadow p-6">
             <h2 class="text-xl font-semibold mb-4">Total Tasks</h2>
-            <p class="text-4xl font-bold"><?= $taskStats['totalTasks'] ?></p>
+            <p class="text-4xl font-bold"><?= $taskStats['totalTasks'] ?? 0 ?></p>
         </div>
         <div class="bg-white rounded-lg shadow p-6">
             <h2 class="text-xl font-semibold mb-4">Completed Tasks</h2>
-            <p class="text-4xl font-bold"><?= $taskStats['tasksByStatus']['Done'] ?></p>
+            <p class="text-4xl font-bold"><?= $taskStats['tasksByStatus']['Done'] ?? 0 ?></p>
         </div>
     </div>
 
@@ -73,7 +73,6 @@
         </div>
     </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {

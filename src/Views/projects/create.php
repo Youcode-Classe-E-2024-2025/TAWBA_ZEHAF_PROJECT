@@ -1,7 +1,10 @@
-<?php require_once __DIR__ . '/../layout.php'; ?>
+<?php require_once __DIR__ . '/../layout.php';
+require_once '../src/Models/Project.php';
+?>
 <script src="https://cdn.tailwindcss.com"></script>
 <div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-8">Kanban Board: <?= htmlspecialchars($project->getName()) ?></h1>
+    <h1 class="text-3xl font-bold mb-8">Kanban Board: <?= htmlspecialchars($project->getName()) ?>
+    </h1>
 
     <div id="kanban-board" class="flex space-x-4">
         <?php foreach ($columns as $column): ?>

@@ -4,7 +4,7 @@ class Tag {
     private $db;
 
     public function __construct() {
-        $this->db = Database::getInstance()->getConnection();
+        $this->db = Database::getInstance()->getConnection() ?: new PDO('mysql:host=localhost;dbname=your_db', 'username', 'password');
     }
 
     public function create($name) {

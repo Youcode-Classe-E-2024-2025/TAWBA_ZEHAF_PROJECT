@@ -26,7 +26,7 @@ class User {
         if ($user && password_verify($password, $user['password'])) {
             return $user;
         }
-        return false;
+          return $user ? $user : null;
     }
 
     public function getUserById($id) {

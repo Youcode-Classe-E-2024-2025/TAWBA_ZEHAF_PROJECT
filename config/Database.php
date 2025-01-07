@@ -1,7 +1,7 @@
 <?php 
 class Database {
     private static $instance = null;
-    private $conn;
+    private $connection;
 
     private function __construct() {
         // Include the config.php file and get the configuration array
@@ -19,7 +19,7 @@ class Database {
 
         try {
             // Establish the PDO connection using credentials from config
-            $this->conn = new PDO($dsn, $config['db_user'], $config['db_pass'], $options);
+            $this->connection = new PDO($dsn, $config['db_user'], $config['db_pass'], $options);
         } catch (\PDOException $e) {
             // Handle connection error
             throw new \PDOException($e->getMessage(), (int)$e->getCode());
@@ -36,6 +36,6 @@ class Database {
 
     public function getConnection() {
         // Return the PDO connection
-        return $this->conn;
+        return $this->connection; 
     }
 }

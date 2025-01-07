@@ -92,3 +92,5 @@ MODIFY COLUMN role_id INT DEFAULT 1;
 CREATE USER IF NOT EXISTS 'users'@'localhost' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON project_management.* TO 'users'@'localhost';
 FLUSH PRIVILEGES;
+ALTER TABLE projects ADD COLUMN user_id INT NOT NULL;
+ALTER TABLE projects ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id);
