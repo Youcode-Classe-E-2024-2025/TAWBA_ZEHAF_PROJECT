@@ -1,5 +1,5 @@
 <?php
-namespace Config;
+require_once __DIR__ . '/../config/config.php';
 $db = Database::getInstance()->getConnection();
 
 // Create kanban_boards table

@@ -30,7 +30,8 @@ class KanbanController {
             $kanbanBoard->createForProject($projectId);
         }
 
-        $tasks = Task::getByProjectId($projectId);
+        $taskInstance = new Task();
+        $tasks = $taskInstance->getByProjectId($projectId);
         $columns = $kanbanBoard->getColumns();
 
         require_once __DIR__ . '/../Views/kanban/show.php';

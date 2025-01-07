@@ -141,6 +141,23 @@ class KanbanBoard {
         }
     }
 
+
+    // public function getColumnsByProjectId($projectId) {
+    
+    //     // Example implementation
+    
+    //     return [
+    
+    //         ['id' => 1, 'name' => 'To Do'],
+    
+    //         ['id' => 2, 'name' => 'In Progress'],
+    
+    //         ['id' => 3, 'name' => 'Done']
+    
+    //     ];
+    
+    // }
+    
     public function getColumns() {
         // Return the columns stored in the $columns property
         return $this->columns;

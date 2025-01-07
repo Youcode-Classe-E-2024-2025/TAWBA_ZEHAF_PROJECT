@@ -9,18 +9,6 @@ class Task {
         $this->db = Database::getInstance()->getConnection();
     }
 
-
-    public function getTaskTags($taskId) {
-
-        // Assuming this function should return an array of tags
-    
-        $stmt = $this->db->prepare("SELECT * FROM tags WHERE task_id = ?");
-    
-        $stmt->execute([$taskId]);
-    
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    }
     public function create($title, $description, $projectId, $assignedTo, $status = 'pending') {
         $sql = "INSERT INTO tasks (title, description, project_id, assigned_to, status) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
@@ -38,26 +26,26 @@ class Task {
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([$id]);
     }
+    public function getTaskById($id) {
+        $sql = "SELECT * FROM tasks WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
-    // public function getTaskById($id) {
-    //     $sql = "SELECT * FROM tasks WHERE id = ?";
-    //     $stmt = $this->db->prepare($sql);
-    //     $stmt->execute([$id]);
-    //     return $stmt->fetch();
-    // }
 
     public function getTasksByProjectId($projectId) {
         $sql = "SELECT * FROM tasks WHERE project_id = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$projectId]);
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getTasksByUserId($userId) {
         $sql = "SELECT * FROM tasks WHERE assigned_to = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$userId]);
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function updateStatus($id, $status) {
@@ -65,7 +53,12 @@ class Task {
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([$status, $id]);
     }
-
+    public function getByProjectId($projectId) {
+        $sql = "SELECT * FROM tasks WHERE project_id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$projectId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
     public function updateTaskColumn($taskId, $columnId) {
         $sql = "UPDATE tasks SET column_id = ? WHERE id = ?";
         $stmt = $this->db->prepare($sql);
@@ -73,34 +66,5 @@ class Task {
     }
     public function getLastInsertedId() {
 
-        return $this->db->lastInsertId();
-
+        return $this->db->lastInsertId();}
     }
-
-
-    public function getTaskById($id) {
-    
-        $stmt = $this->db->prepare("SELECT * FROM tasks WHERE id = ?");
-    
-        $stmt->execute([$id]);
-    
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    }
-    
-    public static function getByProjectId($projectId) {
-
-        // Assuming you have a database connection setup
-
-        $database = new Database();
-        $db = $database->getConnection();
-
-        $stmt = $db->prepare('SELECT * FROM tasks WHERE project_id = ?');
-
-        $stmt->execute([$projectId]);
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    }
-
-}
