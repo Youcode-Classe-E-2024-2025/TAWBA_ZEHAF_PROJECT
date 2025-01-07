@@ -9,13 +9,24 @@
         </div>
         <?php
         if (isset($_SESSION['user_id'])) {
-            $roleMessage = $_SESSION['is_admin'] ? "Connecté en tant qu'administrateur" : "Connecté en tant qu'utilisateur normal";
+            // Check if 'is_admin' key exists in the session before accessing it
+            if (isset($_SESSION['is_admin']) && $_SESSION['is_admin']) {
+                $roleMessage = "Connecté en tant qu'administrateur";
+            } else {
+                $roleMessage = "Connecté en tant qu'utilisateur normal";
+            }
             echo "<p class='text-green-600 mb-4'>{$roleMessage}</p>";
         }
+
+        // if (isset($_SESSION['user_id'])) {
+        // $roleMessage = $_SESSION['is_admin'] ? "Connecté en tant qu'administrateur" : "Connecté en tant qu'utilisateur
+        // normal";
+        // echo "<p class='text-green-600 mb-4'>{$roleMessage}</p>";
+        // }
         if (!empty($errors)) {
-            echo "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative' role='alert'>";
+        echo "<div class='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative' role='alert'>";
             foreach ($errors as $error) {
-                echo "<p>{$error}</p>";
+            echo "<p>{$error}</p>";
             }
             echo "</div>";
         }
@@ -48,22 +59,22 @@
 </div>
 
 <script>
-    document.getElementById('loginForm').addEventListener('submit', function(event) {
-        var email = document.getElementById('email-address').value;
-        var password = document.getElementById('password').value;
-        var errors = [];
+document.getElementById('loginForm').addEventListener('submit', function(event) {
+    var email = document.getElementById('email-address').value;
+    var password = document.getElementById('password').value;
+    var errors = [];
 
-        if (!email || !/\S+@\S+\.\S+/.test(email)) {
-            errors.push("Please enter a valid email address.");
-        }
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
+        errors.push("Please enter a valid email address.");
+    }
 
-        if (!password || password.length < 8) {
-            errors.push("Password must be at least 8 characters long.");
-        }
+    if (!password || password.length < 8) {
+        errors.push("Password must be at least 8 characters long.");
+    }
 
-        if (errors.length > 0) {
-            event.preventDefault();
-            alert(errors.join("\n"));
-        }
-    });
+    if (errors.length > 0) {
+        event.preventDefault();
+        alert(errors.join("\n"));
+    }
+});
 </script>

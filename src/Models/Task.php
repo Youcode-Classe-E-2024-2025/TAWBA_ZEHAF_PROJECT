@@ -9,6 +9,18 @@ class Task {
         $this->db = Database::getInstance()->getConnection();
     }
 
+
+    public function getTaskTags($taskId) {
+
+        // Assuming this function should return an array of tags
+    
+        $stmt = $this->db->prepare("SELECT * FROM tags WHERE task_id = ?");
+    
+        $stmt->execute([$taskId]);
+    
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    }
     public function create($title, $description, $projectId, $assignedTo, $status = 'pending') {
         $sql = "INSERT INTO tasks (title, description, project_id, assigned_to, status) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);

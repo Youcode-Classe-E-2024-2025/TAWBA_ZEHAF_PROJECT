@@ -29,7 +29,7 @@ switch (true) {
                 $controller = new ProjectController();
                 $controller->index();
                 break;
-                case $uri === '/projects/create':
+        case $uri === '/projects/create':
                     $controller = new ProjectController();
                     $controller->create();
                     break;

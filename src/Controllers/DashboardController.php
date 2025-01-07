@@ -18,6 +18,6 @@ class DashboardController {
         $userId = $_SESSION['user_id'];
         $projects = $this->projectModel->getProjectsByUserId($userId);
         $tasks = $this->taskModel->getTasksByUserId($userId);
-        require_once __DIR__ . '/../Views/dashboard.php';
+        require_once __DIR__ . 'src\Views\dashboard\dashboard.php';
     }
 }
