@@ -25,19 +25,34 @@ class Project {
             $description = $_POST['description'];
             $userId = $_SESSION['user_id'];  // Par exemple, en utilisant la session pour obtenir l'ID de l'utilisateur connecté
             $isPublic = isset($_POST['is_public']) ? $_POST['is_public'] : false;
-    
+        
             // Créer un objet Project et appeler la méthode create
             $project = new Project();
             try {
                 $projectId = $project->createProject($name, $description, $userId, $isPublic);
-                // Rediriger vers la page du projet après création
+                // Une fois le projet créé, rediriger vers la page du projet
                 header("Location: /projects/{$projectId}");
+                exit;
             } catch (\Exception $e) {
                 // Gérer l'erreur (ex. afficher un message d'erreur)
                 echo "Error: " . $e->getMessage();
             }
+        } else {
+            // Si la requête n'est pas un POST, charger un projet existant (par exemple)
+            if (isset($_GET['project_id'])) {
+                $projectId = $_GET['project_id'];
+                $project = Project::findById($projectId); // Cette méthode doit être statique et retourner un tableau ou un objet
+                if ($project) {
+                    // Passer l'objet projet à la vue
+                    require_once __DIR__ . '/../Views/projects/create.php';
+                } else {
+                    // Gérer le cas où le projet n'existe pas
+                    echo "Projet non trouvé.";
+                }
+            }
         }
     }
+    
     
 
     public function update($id, $name, $description, $isPublic) {
