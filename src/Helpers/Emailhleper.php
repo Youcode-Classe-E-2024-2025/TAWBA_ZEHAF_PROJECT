@@ -1,5 +1,9 @@
 <?php
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+
 class EmailHelper
 {
     public static function sendVerificationEmail(string $email, string $token): bool
@@ -22,32 +26,33 @@ class EmailHelper
 
     private static function sendEmail(string $to, string $subject, string $body): bool
     {
-        $mail = new PHPMailer\PHPMailer\PHPMailer(true);
 
-        try {
-            //Server settings
-            $mail->isSMTP();
-            $mail->Host       = 'smtp.example.com';
-            $mail->SMTPAuth   = true;
-            $mail->Username   = 'your_username';
-            $mail->Password   = 'your_password';
-            $mail->SMTPSecure = PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port       = 587;
+    $mail = new PHPMailer(true);
 
-            //Recipients
-            $mail->setFrom('from@example.com', 'Your Name');
-            $mail->addAddress($to);
+try {
+    //Server settings
+    $mail->isSMTP();
+    $mail->Host       = $_ENV['SMTP_HOST'];
+    $mail->SMTPAuth   = true;
+    $mail->Username   = $_ENV['SMTP_USERNAME'];
+    $mail->Password   = $_ENV['SMTP_PASSWORD'];
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    $mail->Port       = $_ENV['SMTP_PORT'];
 
-            //Content
-            $mail->isHTML(true);
-            $mail->Subject = $subject;
-            $mail->Body    = $body;
+    //Recipients
+    $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'], $_ENV['MAIL_FROM_NAME']);
+    $mail->addAddress($to);
 
-            $mail->send();
-            return true;
-        } catch (PHPMailer\PHPMailer\Exception $e) {
-            error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
-            return false;
-        }
+    //Content
+    $mail->isHTML(true);
+    $mail->Subject = $subject;
+    $mail->Body    = $body;
+
+    $mail->send();
+    return true;
+} catch (Exception $e) {
+    error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
+    return false;
+}
     }
 }

@@ -9,27 +9,82 @@ class ComposerStaticInita53b336aa5816b4ec99f1becb9553c39
     public static $prefixLengthsPsr4 = array (
         'P' => 
         array (
+            'Psr\\SimpleCache\\' => 16,
+            'Psr\\Http\\Message\\' => 17,
+            'Psr\\Http\\Client\\' => 16,
+            'PhpOffice\\PhpSpreadsheet\\' => 25,
             'PHPMailer\\PHPMailer\\' => 20,
         ),
-        'A' => 
+        'M' => 
         array (
-            'App\\' => 4,
+            'Matrix\\' => 7,
+        ),
+        'C' => 
+        array (
+            'Complex\\' => 8,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'Psr\\SimpleCache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/simple-cache/src',
+        ),
+        'Psr\\Http\\Message\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'Psr\\Http\\Client\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-client/src',
+        ),
+        'PhpOffice\\PhpSpreadsheet\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet',
+        ),
         'PHPMailer\\PHPMailer\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
-        'App\\' => 
+        'Matrix\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/src',
+            0 => __DIR__ . '/..' . '/markbaker/matrix/classes/src',
+        ),
+        'Complex\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/markbaker/complex/classes/src',
         ),
     );
 
     public static $classMap = array (
+        'ActivityLog' => __DIR__ . '/../..' . '/src/Models/ActivityLog.php',
+        'AdminController' => __DIR__ . '/../..' . '/src/Controllers/AdminController.php',
+        'App\\ErrorHandler' => __DIR__ . '/../..' . '/src/ErrorHandler.php',
+        'App\\Helpers\\SecurityHelper' => __DIR__ . '/../..' . '/src/Helpers/SecurityHelper.php',
+        'App\\Middleware\\AdminMiddleware' => __DIR__ . '/../..' . '/src/Middleware/AdminMiddleware.php',
+        'AuthHelper' => __DIR__ . '/../..' . '/src/Helpers/AuthHelper.php',
+        'AuthMiddleware' => __DIR__ . '/../..' . '/src/Middleware/AuthMiddleware.php',
+        'Category' => __DIR__ . '/../..' . '/src/Models/Category.php',
+        'ChartDataController' => __DIR__ . '/../..' . '/src/Controllers/ChartDataController.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'DashboardController' => __DIR__ . '/../..' . '/src/Controllers/DashboardController.php',
+        'EmailHelper' => __DIR__ . '/../..' . '/src/Helpers/Emailhleper.php',
+        'ExcelHelper' => __DIR__ . '/../..' . '/src/Helpers/ExcelHelper.php',
+        'KanbanBoard' => __DIR__ . '/../..' . '/src/Models/KanbanBoard.php',
+        'KanbanBoardController' => __DIR__ . '/../..' . '/src/Controllers/KanbanBoardController.php',
+        'KanbanController' => __DIR__ . '/../..' . '/src/Controllers/KanbanController.php',
+        'MarkdownHelper' => __DIR__ . '/../..' . '/src/Helpers/MarkdownHelper.php',
+        'PermissionMiddleware' => __DIR__ . '/../..' . '/src/Middleware/PermissionMiddleware.php',
+        'Project' => __DIR__ . '/../..' . '/src/Models/Project.php',
+        'ProjectController' => __DIR__ . '/../..' . '/src/Controllers/ProjectController.php',
+        'Role' => __DIR__ . '/../..' . '/src/Models/Role.php',
+        'Tag' => __DIR__ . '/../..' . '/src/Models/Tag.php',
+        'Task' => __DIR__ . '/../..' . '/src/Models/Task.php',
+        'TaskController' => __DIR__ . '/../..' . '/src/Controllers/TaskController.php',
+        'User' => __DIR__ . '/../..' . '/src/Models/User.php',
+        'UserController' => __DIR__ . '/../..' . '/src/Controllers/UserController.php',
+        'ValidationHelper' => __DIR__ . '/../..' . '/src/Helpers/ValidationHelper.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

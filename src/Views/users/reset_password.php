@@ -14,8 +14,8 @@
             echo "</div>";
         }
         ?>
-        <form class="mt-8 space-y-6" action="" method="POST" id="resetPasswordForm">
-            <input type="hidden" name="token" value="<?php echo htmlspecialchars($token ?? ''); ?>">
+        <form class="mt-8 space-y-6" action="" method="POST">
+            <input type="hidden" name="token" value="<?php echo htmlspecialchars($token); ?>">
             <div class="rounded-md shadow-sm -space-y-px">
                 <div>
                     <label for="password" class="sr-only">New Password</label>
@@ -40,28 +40,3 @@
         </form>
     </div>
 </div>
-
-<script>
-document.getElementById('resetPasswordForm').addEventListener('submit', function(event) {
-    var password = document.getElementById('password').value;
-    var confirmPassword = document.getElementById('confirm_password').value;
-    var errors = [];
-
-    // Password validation
-    if (!password.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)) {
-        errors.push(
-            "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number."
-        );
-    }
-
-    // Confirm password validation
-    if (password !== confirmPassword) {
-        errors.push("Passwords do not match.");
-    }
-
-    if (errors.length > 0) {
-        event.preventDefault();
-        alert(errors.join("\n"));
-    }
-});
-</script>

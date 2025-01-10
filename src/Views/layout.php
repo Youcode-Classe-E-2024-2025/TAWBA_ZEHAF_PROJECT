@@ -35,7 +35,7 @@
                     <?php else: ?>
                     <a href="/login"
                         class="py-2 px-2 font-medium text-gray-500 rounded hover:bg-green-500 hover:text-white transition duration-300">Login</a>
-                    <a href="src\Views\users\register.php"
+                    <a href="/register"
                         class="py-2 px-2 font-medium text-white bg-green-500 rounded hover:bg-green-400 transition duration-300">Register</a>
                     <?php endif; ?>
                 </div>

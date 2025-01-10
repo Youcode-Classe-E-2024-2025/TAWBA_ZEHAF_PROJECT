@@ -66,8 +66,23 @@ class Task {
         $stmt->execute([$projectId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-    public function getLastInsertedId() {
-        return $this->db->lastInsertId();
+    
+        public static function count() {
+    
+            // Assuming you have a database connection set up
+    
+            $db = Database::getConnection();
+    
+            $query = $db->query("SELECT COUNT(*) as count FROM tasks");
+    
+            $result = $query->fetch();
+    
+            return $result['count'];
+    
+        }
+    
     }
-}
+
+    // public function getLastInsertedId() {
+    //     return $this->db->lastInsertId();
+    // }

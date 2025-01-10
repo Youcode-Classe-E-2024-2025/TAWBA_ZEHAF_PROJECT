@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../Models/User.php';
 require_once __DIR__ . '/../Models/Project.php';
 require_once __DIR__ . '/../Models/Role.php';
+require_once __DIR__ . '/../Models/Task.php'; // Added require for Task model
 require_once __DIR__ . '/../Helpers/AuthHelper.php';
 
 class AdminController {
@@ -112,5 +113,35 @@ class AdminController {
         }
 
         require_once __DIR__ . '/../Views/admin/delete_project.php';
+    }
+
+    public function login() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $email = $_POST['email'] ?? '';
+            $password = $_POST['password'] ?? '';
+            
+            $user = new User();
+            $adminUser = $user->login($email, $password);
+            
+            if ($adminUser && $adminUser['role'] === 'admin') {
+                $_SESSION['user_id'] = $adminUser['id'];
+                $_SESSION['is_admin'] = true;
+                header('Location: /admin/dashboard');
+                exit;
+            } else {
+                $error = "Invalid credentials or not an admin user.";
+            }
+        }
+        
+        require_once __DIR__ . '/../Views/admin/login.php';
+    }
+
+    public function dashboard() {
+        $stats = [
+            'totalUsers' => User::count(),
+            'totalProjects' => Project::count(),
+            'totalTasks' => Task::count(),
+        ];
+        require_once __DIR__ . '/../Views/admin/dashboard.php';
     }
 }

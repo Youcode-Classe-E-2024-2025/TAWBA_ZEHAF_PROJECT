@@ -1,8 +1,5 @@
 <?php
 
-require_once '../config/Database.php';
-
-
 class User {
     private $db;
 
@@ -26,7 +23,7 @@ class User {
         if ($user && password_verify($password, $user['password'])) {
             return $user;
         }
-          return $user ? $user : null;
+        return false;
     }
 
     public function getUserById($id) {
@@ -36,35 +33,59 @@ class User {
         return $stmt->fetch();
     }
 
-    public function getAllUsers() {
-        $sql = "SELECT id, name, email FROM users";
+    public function setPasswordResetToken($email, $token) {
+        $sql = "UPDATE users SET reset_token = ?, reset_token_expiry = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE email = ?";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll();
+        return $stmt->execute([$token, $email]);
     }
 
-    public static function count() {
-        $db = Database::getInstance()->getConnection();
-        $stmt = $db->query("SELECT COUNT(*) FROM users");
-        return $stmt->fetchColumn();
-    }
+    public function resetPassword($token, $newPassword) {
+        $sql = "SELECT * FROM users WHERE reset_token = ? AND reset_token_expiry > NOW()";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([$token]);
+        $user = $stmt->fetch();
 
-    public static function getAll() {
-        $db = Database::getInstance()->getConnection();
-        $stmt = $db->query("SELECT * FROM users");
-        return $stmt->fetchAll();
-    }
-
-    public static function findById($id) {
-        $db = Database::getInstance()->getConnection();
-        $stmt = $db->prepare("SELECT * FROM users WHERE id = ?");
-        $stmt->execute([$id]);
-        return $stmt->fetch();
+        if ($user) {
+            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+            $sql = "UPDATE users SET password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE id = ?";
+            $stmt = $this->db->prepare($sql);
+            return $stmt->execute([$hashedPassword, $user['id']]);
+        }
+        return false;
     }
 
     public static function delete($id) {
         $db = Database::getInstance()->getConnection();
-        $stmt = $db->prepare("DELETE FROM users WHERE id = ?");
+        $sql = "DELETE FROM users WHERE id = ?";
+        $stmt = $db->prepare($sql);
         return $stmt->execute([$id]);
+    }
+
+    public static function count() {
+        $db = Database::getInstance()->getConnection();
+        $sql = "SELECT COUNT(*) FROM users";
+        return $db->query($sql)->fetchColumn();
+    }
+
+    public static function getAll() {
+        $db = Database::getInstance()->getConnection();
+        $sql = "SELECT * FROM users";
+        return $db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function findById($id) {
+        $db = Database::getInstance()->getConnection();
+        $sql = "SELECT * FROM users WHERE id = ?";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public static function createAdmin($name, $email, $password) {
+        $db = Database::getInstance()->getConnection();
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $sql = "INSERT INTO users (name, email, password, is_admin) VALUES (?, ?, ?, 1)";
+        $stmt = $db->prepare($sql);
+        return $stmt->execute([$name, $email, $hashedPassword]);
     }
 }

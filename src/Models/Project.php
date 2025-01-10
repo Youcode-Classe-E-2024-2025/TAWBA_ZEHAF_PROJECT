@@ -107,14 +107,20 @@ class Project {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function createProject($name, $description, $userId, $isPublic = false) {
-        $sql = "INSERT INTO projects (name, description, user_id, is_public) VALUES (?, ?, ?, ?)";
+    public function createProject($name, $description, $isPublic, $userId) {
+        $sql = "INSERT INTO projects (name, description, is_public, user_id) VALUES (?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
-        if ($stmt->execute([$name, $description, $userId, $isPublic])) {
-            return $this->db->lastInsertId();
-        }
-        return false;
+        return $stmt->execute([$name, $description, $isPublic, $userId]);
     }
+
+    // public function createProject($name, $description, $userId, $isPublic = false) {
+    //     $sql = "INSERT INTO projects (name, description, user_id, is_public) VALUES (?, ?, ?, ?)";
+    //     $stmt = $this->db->prepare($sql);
+    //     if ($stmt->execute([$name, $description, $userId, $isPublic])) {
+    //         return $this->db->lastInsertId();
+    //     }
+    //     return false;
+    // }
 
     public function updateProject($id, $name, $description, $isPublic = false) {
         $sql = "UPDATE projects SET name = ?, description = ?, is_public = ? WHERE id = ?";

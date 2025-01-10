@@ -1,11 +1,8 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 require_once __DIR__ . '/../Models/Project.php';
-require_once __DIR__ . '/../Middleware/AuthMiddleware.php';
 require_once __DIR__ . '/../Helpers/ValidationHelper.php';
+require_once __DIR__ . '/../Helpers/AuthHelper.php';
 
 class ProjectController {
     private $projectModel;
@@ -15,68 +12,102 @@ class ProjectController {
     }
 
     public function index() {
-        AuthMiddleware::requireLogin();
+        AuthHelper::requireLogin();
         $userId = $_SESSION['user_id'];
         $projects = $this->projectModel->getProjectsByUserId($userId);
         require_once __DIR__ . '/../Views/projects/index.php';
-    }
-
-    public function create() {
-        AuthMiddleware::requireLogin(); // Vérifie si l'utilisateur est connecté
+    }  public function create() {
+        AuthHelper::requireLogin();
     
-        // Si la requête est en POST, nous créons un projet
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Récupérer les données envoyées par le formulaire
-            $name = $_POST['name'];
-            $description = $_POST['description'];
-            $userId = $_SESSION['user_id']; // ID de l'utilisateur connecté
-            $isPublic = isset($_POST['is_public']) ? $_POST['is_public'] : false;
-    
-            // Créer un objet Project et appeler la méthode createProject pour insérer dans la base de données
-            $project = new Project();
-            try {
-                $projectId = $project->createProject($name, $description, $userId, $isPublic);
-    
-                // Une fois le projet créé, rediriger vers la page du projet
-                header("Location: /projects/{$projectId}");
-                exit; // Ne pas oublier de stopper le script après une redirection
-            } catch (\Exception $e) {
-                // Si une erreur se produit lors de la création, l'afficher
-                echo "Erreur : " . $e->getMessage();
+            $name = $_POST['name'] ?? '';
+            $description = $_POST['description'] ?? '';
+            $isPublic = isset($_POST['is_public']) ? 1 : 0;
+            $userId = $_SESSION['user_id'];
+
+            error_log("Attempting to create project: " . json_encode($_POST));
+
+            $errors = ValidationHelper::validateProject($name, $description);
+
+            if (empty($errors)) {
+                try {
+                    if ($this->projectModel->createProject($name, $description, $isPublic, $userId)) {
+                        error_log("Project created successfully");
+                        header('Location: /projects');
+                        exit;
+                    } else {
+                        error_log("Failed to create project");
+                        $errors[] = "Failed to create project";
+                    }
+                } catch (Exception $e) {
+                    error_log("Exception when creating project: " . $e->getMessage());
+                    $errors[] = "An error occurred while creating the project";
+                }
+            } else {
+                error_log("Validation errors: " . json_encode($errors));
             }
-        } else {
-            // Si la requête est en GET, cela signifie qu'on doit afficher le formulaire de création de projet
-            require_once __DIR__ . '/../Views/projects/create.php'; // Afficher le formulaire
         }
+
+        require_once __DIR__ . '/../Views/projects/create.php';
     }
+    // public function create() {
+    //     try {
+    //         // Ensure user is logged in
+    //         AuthMiddleware::requireLogin();
     
+    //         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    //             $name = $_POST['name'];
+    //             $description = $_POST['description'];
+    //             $userId = $_SESSION['user_id']; // Logged-in user ID
+    //             $isPublic = isset($_POST['is_public']) ? $_POST['is_public'] : false;
+    
+    //             // Ensure valid data
+    //             if (empty($name) || empty($description)) {
+    //                 throw new Exception("Project name and description are required.");
+    //             }
+    
+    //             $project = new Project();
+    //             $projectId = $project->createProject($name, $description, $userId, $isPublic);
+    
+    //             // Redirect after project creation
+    //             header("Location: /projects/{$projectId}");
+    //             exit;
+    //         } else {
+    //             // If GET request, display the create project form
+    //             require_once __DIR__ . '/../Views/projects/create.php';
+    //         }
+    //     } catch (Exception $e) {
+    //         echo "Error: " . $e->getMessage();
+    //     }
+    // }
     
     public function view($id) {
-        AuthMiddleware::requireLogin();
+        AuthHelper::requireLogin();
         $project = $this->projectModel->getProjectById($id);
         if (!$project) {
-            header('Location: /projects?error=Project not found');
+            header('Location: /projects');
             exit;
         }
         require_once __DIR__ . '/../Views/projects/view.php';
     }
 
     public function edit($id) {
-        AuthMiddleware::requireLogin();
+        AuthHelper::requireLogin();
         $project = $this->projectModel->getProjectById($id);
         if (!$project) {
-            header('Location: /projects?error=Project not found');
+            header('Location: /projects');
             exit;
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name = $_POST['name'] ?? '';
             $description = $_POST['description'] ?? '';
+            $isPublic = isset($_POST['is_public']) ? 1 : 0;
 
             $errors = ValidationHelper::validateProject($name, $description);
 
             if (empty($errors)) {
-                if ($this->projectModel->updateProject($id, $name, $description)) {
+                if ($this->projectModel->updateProject($id, $name, $description, $isPublic)) {
                     header('Location: /projects');
                     exit;
                 } else {
@@ -84,25 +115,21 @@ class ProjectController {
                 }
             }
         }
+
         require_once __DIR__ . '/../Views/projects/edit.php';
     }
 
     public function delete($id) {
-        AuthMiddleware::requireLogin();
-        if ($this->projectModel->deleteProject($id)) {
-            header('Location: /projects?message=Project deleted successfully');
-            exit;
-        } else {
-            header('Location: /projects?error=Failed to delete project');
-            exit;
+        AuthHelper::requireLogin();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if ($this->projectModel->deleteProject($id)) {
+                header('Location: /projects');
+                exit;
+            } else {
+                $error = "Failed to delete project";
+            }
         }
-    }
-
-    public function search() {
-        AuthMiddleware::requireLogin();
-        $query = $_GET['query'] ?? '';
-        $userId = $_SESSION['user_id'];
-        $projects = $this->projectModel->searchProjects($query, $userId);
-        require_once __DIR__ . '/../Views/projects/search.php';
+        $project = $this->projectModel->getProjectById($id);
+        require_once __DIR__ . '/../Views/projects/delete.php';
     }
 }

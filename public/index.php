@@ -8,16 +8,14 @@ require_once __DIR__ . '/../src/Controllers/UserController.php';
 require_once __DIR__ . '/../src/Controllers/ProjectController.php';
 require_once __DIR__ . '/../src/Controllers/TaskController.php';
 require_once __DIR__ . '/../src/Controllers/DashboardController.php';
-require_once __DIR__ . '/../src/Controllers/KanbanController.php';
-require_once __DIR__ . '/../src/Controllers/AdminController.php';
+require_once __DIR__ . '/../src/Controllers/AdminController.php'; // Added require for AdminController
 require_once __DIR__ . '/../src/Middleware/AuthMiddleware.php';
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 // Simple routing
 switch (true) {
-    case $uri === '/':
-    case $uri === '/dashboard':
+    case $uri === '/' || $uri === '/dashboard':
         AuthMiddleware::requireLogin();
         $controller = new DashboardController();
         $controller->index();
@@ -38,89 +36,69 @@ switch (true) {
         $controller->logout();
         break;
 
+    case $uri === '/forgot-password':
+        $controller = new UserController();
+        $controller->forgotPassword();
+        break;
+
+    case preg_match('/^\/reset-password\/([^\/]+)$/', $uri, $matches):
+        $controller = new UserController();
+        $controller->resetPassword($matches[1]);
+        break;
+
     case $uri === '/projects':
+        AuthMiddleware::requireLogin();
         $controller = new ProjectController();
         $controller->index();
         break;
 
     case $uri === '/projects/create':
+        AuthMiddleware::requireLogin();
         $controller = new ProjectController();
         $controller->create();
         break;
 
     case preg_match('/^\/projects\/edit\/(\d+)$/', $uri, $matches):
+        AuthMiddleware::requireLogin();
         $controller = new ProjectController();
         $controller->edit($matches[1]);
         break;
 
     case preg_match('/^\/projects\/delete\/(\d+)$/', $uri, $matches):
+        AuthMiddleware::requireLogin();
         $controller = new ProjectController();
         $controller->delete($matches[1]);
         break;
 
     case preg_match('/^\/projects\/view\/(\d+)$/', $uri, $matches):
+        AuthMiddleware::requireLogin();
         $controller = new ProjectController();
         $controller->view($matches[1]);
         break;
 
-    case preg_match('/^\/projects\/kanban\/(\d+)$/', $uri, $matches):
-        $controller = new KanbanController();
-        $controller->show($matches[1]);
-        break;
-
     case preg_match('/^\/tasks\/create\/(\d+)$/', $uri, $matches):
+        AuthMiddleware::requireLogin();
         $controller = new TaskController();
         $controller->create($matches[1]);
         break;
 
     case preg_match('/^\/tasks\/edit\/(\d+)$/', $uri, $matches):
+        AuthMiddleware::requireLogin();
         $controller = new TaskController();
         $controller->edit($matches[1]);
         break;
 
-    case $uri === '/tasks/move':
-        $controller = new TaskController();
-        $controller->moveTask();
-        break;
-
-    case $uri === '/admin':
+    // Admin login route
+    case $uri === '/admin/login':
         $controller = new AdminController();
-        $controller->index();
+        $controller->login();
         break;
 
-    case $uri === '/admin/users':
+    // Admin dashboard route
+    case $uri === '/admin/dashboard':
+        AuthMiddleware::requireAdmin();
         $controller = new AdminController();
-        $controller->users();
-        break;
-
-    case preg_match('/^\/admin\/users\/edit\/(\d+)$/', $uri, $matches):
-        $controller = new AdminController();
-        $controller->editUser($matches[1]);
-        break;
-
-    case preg_match('/^\/admin\/users\/delete\/(\d+)$/', $uri, $matches):
-        $controller = new AdminController();
-        $controller->deleteUser($matches[1]);
-        break;
-
-    case $uri === '/admin/projects':
-        $controller = new AdminController();
-        $controller->projects();
-        break;
-
-    case preg_match('/^\/admin\/projects\/edit\/(\d+)$/', $uri, $matches):
-        $controller = new AdminController();
-        $controller->editProject($matches[1]);
-        break;
-
-    case preg_match('/^\/admin\/projects\/delete\/(\d+)$/', $uri, $matches):
-        $controller = new AdminController();
-        $controller->deleteProject($matches[1]);
-        break;
-
-    case $uri === '/projects/search':
-        $controller = new ProjectController();
-        $controller->search();
+        $controller->dashboard();
         break;
 
     default:
