@@ -28,6 +28,11 @@ class UserController {
                 }
             }
         }
+        
+        // Make sure to include the CSRF token
+        $csrfToken = bin2hex(random_bytes(32));
+        $_SESSION['csrf_token'] = $csrfToken;
+        
         require_once __DIR__ . '/../Views/users/register.php';
     }
 

@@ -1,5 +1,6 @@
 <?php require_once __DIR__ . '/../layout.php';
 require_once '../src/Models/Project.php';
+if (isset($project)):
 ?>
 <script src="https://cdn.tailwindcss.com"></script>
 <div class="container mx-auto px-4 py-8">
@@ -23,7 +24,8 @@ require_once '../src/Models/Project.php';
         <?php endforeach; ?>
     </div>
 </div>
-
+<p>Le projet n'a pas pu être chargé.</p>
+<?php endif; ?>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
