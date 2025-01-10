@@ -1,7 +1,5 @@
 <?php
 
-require_once __DIR__ . '/../../config/Database.php';
-
 class Task {
     private $db;
 
@@ -53,36 +51,4 @@ class Task {
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([$status, $id]);
     }
-
-    public function updateTaskColumn($taskId, $columnId) {
-        $sql = "UPDATE tasks SET column_id = ? WHERE id = ?";
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute([$columnId, $taskId]);
-    }
-
-    public function getByProjectId($projectId) {
-        $sql = "SELECT * FROM tasks WHERE project_id = ?";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$projectId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    
-        public static function count() {
-    
-            // Assuming you have a database connection set up
-    
-            $db = Database::getConnection();
-    
-            $query = $db->query("SELECT COUNT(*) as count FROM tasks");
-    
-            $result = $query->fetch();
-    
-            return $result['count'];
-    
-        }
-    
-    }
-
-    // public function getLastInsertedId() {
-    //     return $this->db->lastInsertId();
-    // }
+}
